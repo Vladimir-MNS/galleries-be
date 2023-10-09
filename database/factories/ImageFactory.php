@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Gallery;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Image>
  */
-class CommentFactory extends Factory
+class ImageFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,11 +18,8 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'content' => fake()->paragraph(),
-            'author' => fake()->name(),
+            'image_url' => fake()->imageUrl(400, 400), 
             'gallery_id' => Gallery::pluck('id')->random(),
-            'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
-            'updated_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }
