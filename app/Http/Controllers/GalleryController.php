@@ -23,7 +23,9 @@ class GalleryController extends Controller
         if($query) {
             $galleries = $this->searchQuery($field, $query, $take, $skip);
         } else {
-            $galleries = Gallery::with('images')->skip($skip)
+            $galleries = Gallery::with('images')
+            ->orderBy('created_at', 'desc')
+            ->skip($skip)
             ->take($take)
             ->get();
         }
@@ -34,6 +36,7 @@ class GalleryController extends Controller
                 'name' => $gallery->name,
                 'description' => $gallery->description,
                 'author' => $gallery->author,
+                'created_at' => $gallery->created_at,
                 'images' => $gallery->images->pluck('image_url')->all()
             ];
         });
@@ -45,6 +48,7 @@ class GalleryController extends Controller
 
     public function searchQuery ($field, $query, $take, $skip) {
         return Gallery::with('images')->where($field, 'LIKE', '%' . $query . '%')
+            ->orderBy('created_at', 'desc')
             ->skip($skip)
             ->take($take)
             ->get();
@@ -85,9 +89,20 @@ class GalleryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Gallery $gallery)
+    public function show(int $id)
     {
-        //
+        $gallery = Gallery::with('images')->findOrFail($id);
+        $responseData = [
+            'id' => $gallery->id,
+            'name' => $gallery->name,
+            'description' => $gallery->description,
+            'user_id' => $gallery->user_id,
+            'author' => $gallery->author,
+            'created_at' => $gallery->created_at,
+            'images' => $gallery->images->pluck('image_url')->all()
+        ];
+
+        return $responseData;
     }
 
     /**
@@ -122,8 +137,15 @@ class GalleryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Gallery $gallery)
+    public function destroy(int $id)
     {
-        //
+        try {
+            $gallery = Gallery::findOrFail($id);
+            $gallery->images()->delete();
+            $gallery->delete();
+            return response()->json(['message' => 'Gallery deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gallery not found or could not be deleted'], 404);
+        }
     }
 }
