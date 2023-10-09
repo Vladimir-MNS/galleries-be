@@ -91,7 +91,7 @@ class GalleryController extends Controller
      */
     public function show(int $id)
     {
-        $gallery = Gallery::with('images')->findOrFail($id);
+        $gallery = Gallery::with('images')->with('comments')->findOrFail($id);
         $responseData = [
             'id' => $gallery->id,
             'name' => $gallery->name,
@@ -99,7 +99,8 @@ class GalleryController extends Controller
             'user_id' => $gallery->user_id,
             'author' => $gallery->author,
             'created_at' => $gallery->created_at,
-            'images' => $gallery->images->pluck('image_url')->all()
+            'images' => $gallery->images->pluck('image_url')->all(),
+            'comments' => $gallery->comments
         ];
 
         return $responseData;

@@ -3,8 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\MovieController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +27,4 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
 });
 
 Route::apiResource('/galleries', GalleryController::class);
+Route::apiResource('/comments', CommentController::class);
