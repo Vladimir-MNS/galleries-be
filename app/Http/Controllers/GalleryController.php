@@ -36,17 +36,24 @@ class GalleryController extends Controller
                 'name' => $gallery->name,
                 'description' => $gallery->description,
                 'author' => $gallery->author,
+                'user_id' => $gallery->user_id,
                 'created_at' => $gallery->created_at,
                 'images' => $gallery->images->pluck('image_url')->all()
             ];
         });
 
-        // return response()->json(['galleries' => $responseData], 200);
         return $responseData;
     }
 
 
     public function searchQuery ($field, $query, $take, $skip) {
+        if ($field=='user_id') {
+            return Gallery::with('images')->where($field, 'LIKE', $query)
+            ->orderBy('created_at', 'desc')
+            ->skip($skip)
+            ->take($take)
+            ->get();
+        }
         return Gallery::with('images')->where($field, 'LIKE', '%' . $query . '%')
             ->orderBy('created_at', 'desc')
             ->skip($skip)

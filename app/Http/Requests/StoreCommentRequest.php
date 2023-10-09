@@ -24,5 +24,14 @@ class StoreCommentRequest extends FormRequest
         return [
             'content' => 'required|min:1|max:1000',
         ];
+
     }
+
+    public function messages(): array
+    {
+        return [
+            'content.required' => 'You must type in some text to post a comment',
+        ];
+    }
+
 }
